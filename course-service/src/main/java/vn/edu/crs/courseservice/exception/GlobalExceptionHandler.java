@@ -1,4 +1,3 @@
-// path: course-service/src/main/java/vn/edu/crs/courseservice/exception/GlobalExceptionHandler.java
 package vn.edu.crs.courseservice.exception;
 
 import org.springframework.http.HttpStatus;
@@ -23,6 +22,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleBadRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleConflict(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("message", ex.getMessage()));
     }
 
