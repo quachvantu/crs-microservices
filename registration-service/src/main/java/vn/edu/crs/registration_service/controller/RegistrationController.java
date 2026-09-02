@@ -1,28 +1,37 @@
-    package vn.edu.crs.registration_service.controller;
+package vn.edu.crs.registration_service.controller;
 
-    import vn.edu.crs.registration_service.dto.RegistrationRequestDTO;
-    import vn.edu.crs.registration_service.entity.Registration;
-    import vn.edu.crs.registration_service.service.RegistrationService;
-    import jakarta.validation.Valid;
-    import lombok.RequiredArgsConstructor;
-    import org.springframework.http.HttpStatus;
-    import org.springframework.web.bind.annotation.*;
+import vn.edu.crs.registration_service.dto.RegistrationRequestDTO;
+import vn.edu.crs.registration_service.entity.Registration;
+import vn.edu.crs.registration_service.service.RegistrationService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-    @RestController
-    @RequestMapping("/registrations")
-    @RequiredArgsConstructor
-    public class RegistrationController {
+import java.util.List;
 
-        private final RegistrationService registrationService;
+@RestController
+@RequestMapping("/registrations")
+@RequiredArgsConstructor
+public class RegistrationController {
 
-        @PostMapping
-        @ResponseStatus(HttpStatus.CREATED)
-        public Registration register(@Valid @RequestBody RegistrationRequestDTO dto) {
-            return registrationService.register(dto);
-        }
+    private final RegistrationService registrationService;
 
-        @DeleteMapping("/{id}")
-        public void cancel(@PathVariable Long id) {
-            registrationService.cancel(id);
-        }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Registration register(@Valid @RequestBody RegistrationRequestDTO dto) {
+        return registrationService.register(dto);
     }
+
+    @GetMapping("/my")
+    public List<Registration> getMyRegistrations(Authentication authentication) {
+        Long studentId = (Long) authentication.getCredentials();
+        return registrationService.getMyRegistrations(studentId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void cancel(@PathVariable Long id) {
+        registrationService.cancel(id);
+    }
+}
